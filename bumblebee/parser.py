@@ -5,10 +5,11 @@ import json
 class Parser(object):
     def __init__(self, schema_path, schema_type):
         with open(schema_path) as f:
-            data = json.load(f)
-        self.schema = data
+            schema = json.load(f)
         validator = SchemaTypeValidator(schema_type)
-        validator.validate_schema(self.schema)
+        validator.validate_schema(schema)
+        self.schema = schema
+
 
     @property
     def schema(self):
