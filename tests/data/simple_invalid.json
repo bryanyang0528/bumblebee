@@ -1,0 +1,6 @@
+[{ "col_string": "string",
+  "col_integer": "NULL",
+  "col_float": 5566.5566,
+  "col_date": "1995-01-01",
+  "col_datetime": "1995-01-01 00:01:01",
+  "col_boolean": true}]
