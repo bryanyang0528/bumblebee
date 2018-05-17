@@ -14,10 +14,12 @@ class TestSchemaParser(unittest.TestCase):
 
     def test_read_raw_schema(self):
         raw_schema = Parser(self.simple_schema_path, ST.big_query).raw_schema
-        self.assertEqual(raw_schema, {"col_string": "STRING",
-                                  "col_integer": "INTEGER",
-                                  "col_float": "FLOAT",
-                                  "col_date": "DATE"})
+        self.assertEqual(raw_schema, {"col_string":"STRING",
+                                      "col_integer":"INTEGER",
+                                      "col_float":"FLOAT",
+                                      "col_date":"DATE",
+                                      "col_datetime": "DATETIME",
+                                      "col_boolean": "BOOLEAN"})
 
     def test_schema_validate_not_pass(self):
         with self.assertRaises(TypeError):
@@ -28,4 +30,6 @@ class TestSchemaParser(unittest.TestCase):
         self.assertEqual(schema, {"col_string": "string",
                                   "col_integer": "integer",
                                   "col_float": "double",
-                                  "col_date": "date"})
+                                  "col_date": "date",
+                                  "col_datetime": "timestamp",
+                                  "col_boolean": "boolean"})
