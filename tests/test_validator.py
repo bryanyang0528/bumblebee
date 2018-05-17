@@ -15,23 +15,21 @@ spark = SparkSession.builder.getOrCreate()
 class TestValidator(unittest.TestCase):
 
     def setUp(self):
-        simple_schema_path = schema_path + 'simple.json'
-        data_for_simple_schema_path = data_path + 'simple.json'
+        pass
 
+    def test_simple_data_validate(self):
+        data_for_simple_schema_path = data_path + 'simple.json'
         with open(data_for_simple_schema_path) as f:
             data = json.load(f)
 
-        self.simple_df = spark.createDataFrame(data)
-        self.simple_df.show()
-
-    def test_simple_data_validate(self):
-        simple_df = self.simple_df
+        simple_df = spark.createDataFrame(data)
         schema = {"col_string": "string",
                   "col_integer": "integer",
                   "col_float": "double",
                   "col_date": "date",
                   "col_datetime": "timestamp",
                   "col_boolean": "boolean"}
+
         validate_data = Validator.validate_data(simple_df, schema).collect()
         print(validate_data)
 
