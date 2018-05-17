@@ -14,6 +14,13 @@ spark = SparkSession.builder.getOrCreate()
 
 class TestValidator(unittest.TestCase):
 
+    simple_schema = {"col_string": "string",
+                     "col_integer": "integer",
+                     "col_float": "double",
+                     "col_date": "date",
+                     "col_datetime": "timestamp",
+                     "col_boolean": "boolean"}
+
     def setUp(self):
         pass
 
@@ -23,14 +30,8 @@ class TestValidator(unittest.TestCase):
             data = json.load(f)
 
         simple_df = spark.createDataFrame(data)
-        schema = {"col_string": "string",
-                  "col_integer": "integer",
-                  "col_float": "double",
-                  "col_date": "date",
-                  "col_datetime": "timestamp",
-                  "col_boolean": "boolean"}
 
-        validate_data = Validator.validate_data(simple_df, schema).collect()
+        validate_data = Validator.validate_data(simple_df, self.simple_schema).collect()
         self.assertEqual(validate_data,
                          [Row(col_boolean=True, col_date=datetime.date(1995, 1, 1),
                               col_datetime=datetime.datetime(1995, 1, 1, 0, 1, 1), col_float=5566.5566,
@@ -43,14 +44,7 @@ class TestValidator(unittest.TestCase):
             data = json.load(f)
         simple_invalid_df = spark.createDataFrame(data)
 
-        schema = {"col_string": "string",
-                  "col_integer": "integer",
-                  "col_float": "double",
-                  "col_date": "date",
-                  "col_datetime": "timestamp",
-                  "col_boolean": "boolean"}
-
-        validate_data = Validator.validate_data(simple_invalid_df, schema).collect()
+        validate_data = Validator.validate_data(simple_invalid_df, self.simple_schema).collect()
         self.assertEqual(validate_data,
                          [Row(col_boolean=True, col_date=datetime.date(1995, 1, 1),
                               col_datetime=datetime.datetime(1995, 1, 1, 0, 1, 1), col_float=5566.5566,
@@ -65,14 +59,7 @@ class TestValidator(unittest.TestCase):
                  "col_boolean": True}]
         df = spark.createDataFrame(data)
 
-        schema = {"col_string": "string",
-                  "col_integer": "integer",
-                  "col_float": "double",
-                  "col_date": "date",
-                  "col_datetime": "timestamp",
-                  "col_boolean": "boolean"}
-
-        validate_data = Validator.validate_data(df, schema).collect()
+        validate_data = Validator.validate_data(df, self.simple_schema).collect()
         self.assertEqual(validate_data,
                          [Row(col_boolean=True, col_date=None,
                               col_datetime=datetime.datetime(1995, 1, 1, 0, 1, 1), col_float=5566.5566,
