@@ -74,13 +74,6 @@ class TestValidator(unittest.TestCase):
                  "col_boolean": True}]
         df = spark.createDataFrame(data)
 
-        schema = {"col_string": "string",
-                  "col_integer": "integer",
-                  "col_float": "double",
-                  "col_date": "date",
-                  "col_datetime": "timestamp",
-                  "col_boolean": "boolean"}
-
         validate_data = Validator.validate_data(df, schema).collect()
         self.assertEqual(validate_data,
                          [Row(col_boolean=True, col_date=None,
