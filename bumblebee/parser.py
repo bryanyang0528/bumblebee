@@ -6,9 +6,20 @@ class Parser(object):
     def __init__(self, schema_path, schema_type):
         with open(schema_path) as f:
             schema = json.load(f)
-        validator = SchemaTypeValidator(schema_type)
-        validator.validate_schema(schema)
-        self.schema = schema
+        self.schema_type = schema_type
+        self.raw_schema = schema
+
+
+    @property
+    def raw_schema(self):
+        return self._raw_schema
+
+    @raw_schema.setter
+    def raw_schema(self, raw_schema):
+        validator = SchemaTypeValidator(self.schema_type.keys())
+        validator.validate_schema(raw_schema)
+        self.schema = self.map_schema(raw_schema, self.schema_type)
+        self._raw_schema = raw_schema
 
 
     @property
@@ -18,6 +29,13 @@ class Parser(object):
     @schema.setter
     def schema(self, new_schema):
         self._schema = new_schema
+
+    def map_schema(self, raw_schema: dict, schema_type: dict):
+        new_schema = {}
+        for key, value in raw_schema.items():
+            new_schema[key] = schema_type[value]
+
+        return new_schema
 
 
 class SchemaTypeValidator(object):
@@ -51,4 +69,12 @@ class SchemaTypeValidator(object):
 
 class SchemaTypes(object):
 
-    big_query = ["STRING","BYTES","INTEGER","FLOAT","BOOLEAN","TIMESTAMP","DATE","DATETIME","RECORD"]
+    big_query = {"STRING": "string",
+                        "BYTES": "binary",
+                        "INTEGER": "integer",
+                        "FLOAT": "double",
+                        "BOOLEAN" :"boolean",
+                        "TIMESTAMP": "timestamp",
+                        "DATE": "date",
+                        "DATETIME": "timestamp",
+                        "RECORD":"string"}
