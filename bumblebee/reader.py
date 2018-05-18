@@ -29,17 +29,30 @@ class HiveReader(object):
     def table_name(self, table_name):
         self._table_name = table_name
 
-    def select(self, db='default', table=None, condition=None):
+    def select(self, db=None, table=None, condition=None):
         """
 
         :rtype: pyspark.sql.DataFrame
         """
-        if not table and not self.table_name:
+        if not db and self.db_name:
+            db = self.db_name
+        elif not db and not self.db_name:
+            db = 'default'
+        else:
+            db = db
+
+        if not table and self.table_name:
+            table = self.table_name
+        elif not table and not self.table_name:
             raise ValueError("Lack a table name to be selected")
-        elif not condition:
-            return self.spark.sql("select * from {}.{}".format(db, table))
+        else:
+            table = table
+
+        if not condition:
+            df = self.spark.sql("select * from {}.{}".format(db, table))
         elif condition and isinstance(condition, str):
             df = self.spark.sql("select * from {}.{} where {}".format(db, table, condition))
-            return df
         else:
             raise ValueError("Partition key is not available")
+
+        return df
