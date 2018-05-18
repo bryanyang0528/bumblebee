@@ -3,7 +3,8 @@ import unittest
 from mock import patch
 
 from pyspark.sql import DataFrame, SparkSession
-from bumblebee import HiveReader
+from bumblebee import Table, HiveReader
+from bumblebee import SchemaTypes as ST
 
 schema_path = 'tests/schema/'
 data_path = 'tests/data/'
@@ -11,7 +12,7 @@ data_path = 'tests/data/'
 spark = SparkSession.builder.getOrCreate()
 
 
-class TestValidator(unittest.TestCase):
+class TestHiveReader(unittest.TestCase):
 
     def setUp(self):
         pass
@@ -79,5 +80,14 @@ class TestValidator(unittest.TestCase):
         with self.assertRaises(ValueError):
             df = reader.select(db, table, condition=condition)
             mock_spark_sql.assert_not_called()
+
+    def test_reader_w_table(self):
+        path = schema_path + 'default.test.json'
+        table = Table(path, ST.big_query)
+        reader = HiveReader(table)
+        self.assertEqual(reader.table_name, table.name)
+        self.assertEqual(reader.db_name, table.db_name)
+
+
 
 
