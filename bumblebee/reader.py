@@ -1,7 +1,6 @@
 
 from pyspark.sql import SparkSession
 
-from bumblebee import Table
 
 class HiveReader(object):
 
@@ -10,6 +9,9 @@ class HiveReader(object):
         if table:
             self.db_name = table.db_name
             self.table_name = table.name
+        else:
+            self.db_name = None
+            self.table_name = None
 
     @property
     def db_name(self):
@@ -32,7 +34,7 @@ class HiveReader(object):
 
         :rtype: pyspark.sql.DataFrame
         """
-        if not table:
+        if not table and not self.table_name:
             raise ValueError("Lack a table name to be selected")
         elif not condition:
             return self.spark.sql("select * from {}.{}".format(db, table))
