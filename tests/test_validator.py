@@ -3,7 +3,6 @@ import datetime
 import unittest
 
 from pyspark.sql import SparkSession, Row
-
 from bumblebee import Validator
 
 schema_path = 'tests/schema/'
