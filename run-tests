@@ -1,0 +1,13 @@
+#!/bin/bash
+set -x
+
+pip install --upgrade pip setuptools
+pip install coverage mock nose
+
+nosetests \
+    --logging-level=INFO \
+    --detailed-errors \
+    --verbosity=2 \
+    --with-coverage \
+    --cover-package .\
+    --cover-erase
