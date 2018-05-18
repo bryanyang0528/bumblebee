@@ -48,3 +48,9 @@ class TestSchemaParser(unittest.TestCase):
         db_name = table.db_name
         self.assertEqual(table_name, "simple")
         self.assertEqual(db_name, "default")
+
+    def test_table_name_error(self):
+        path = schema_path + 'default.foo.test.json'
+        with self.assertRaises(ValueError):
+            schema = Table(path, ST.big_query)
+
