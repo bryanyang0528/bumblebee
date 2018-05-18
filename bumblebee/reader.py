@@ -1,11 +1,31 @@
 
 from pyspark.sql import SparkSession
 
+from bumblebee import Table
 
 class HiveReader(object):
 
-    def __init__(self):
+    def __init__(self, table=None):
         self.spark = SparkSession.builder.getOrCreate()
+        if table:
+            self.db_name = table.db_name
+            self.table_name = table.name
+
+    @property
+    def db_name(self):
+        return self._db_name
+
+    @db_name.setter
+    def db_name(self, db_name):
+        self._db_name = db_name
+
+    @property
+    def table_name(self):
+        return self._table_name
+
+    @table_name.setter
+    def table_name(self, table_name):
+        self._table_name = table_name
 
     def select(self, db='default', table=None, condition=None):
         """
