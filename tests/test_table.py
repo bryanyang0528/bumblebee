@@ -1,7 +1,7 @@
 import unittest
 
-from bumblebee.table import Table
-from bumblebee.table import SchemaTypes as ST
+from bumblebee import Table
+from bumblebee import SchemaTypes as ST
 
 schema_path = 'tests/schema/'
 
