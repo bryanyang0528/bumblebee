@@ -1,0 +1,6 @@
+{ "col_string":"STRING",
+  "col_integer":"INTEGER",
+  "col_float":"FLOAT",
+  "col_date":"DATE",
+  "col_datetime": "DATETIME",
+  "col_boolean": "BOOLEAN"}
