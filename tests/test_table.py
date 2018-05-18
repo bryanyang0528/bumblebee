@@ -33,3 +33,18 @@ class TestSchemaParser(unittest.TestCase):
                                   "col_date": "date",
                                   "col_datetime": "timestamp",
                                   "col_boolean": "boolean"})
+
+    def test_table_name(self):
+        path = schema_path + 'default.test.json'
+        table = Table(path, ST.big_query)
+        table_name = table.name
+        db_name = table.db_name
+        self.assertEqual(table_name, "test")
+        self.assertEqual(db_name, "default")
+
+    def test_table_name_default(self):
+        table = Table(self.simple_schema_path, ST.big_query)
+        table_name = table.name
+        db_name = table.db_name
+        self.assertEqual(table_name, "simple")
+        self.assertEqual(db_name, "default")
