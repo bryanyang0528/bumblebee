@@ -66,7 +66,6 @@ class Table(object):
     def name_parser(path):
         filename = path.split("/")[-1]
         parts = filename.split(".")
-        print(parts)
         if len(parts) == 3:
             return parts[0], parts[1]
         if len(parts) == 2:
