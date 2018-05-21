@@ -1,9 +1,10 @@
 from __future__ import print_function, division
 import json
 
+import attr
 
 class Table(object):
-    def __init__(self, schema_path, schema_mapper: dict):
+    def __init__(self, schema_path, schema_mapper: str):
         """
         
         :param schema_path: 
@@ -13,7 +14,8 @@ class Table(object):
         """
         with open(schema_path) as f:
             schema = json.load(f)
-        self.schema_mapper = schema_mapper
+
+        self.schema_mapper = SchemaMappers.get_mapper(schema_mapper)
         self.raw_schema = schema
         self.schema = self.map_schema(self.raw_schema, self.schema_mapper)
         db_name, table_name = self.name_parser(schema_path)
@@ -108,7 +110,7 @@ class SchemaMappers(object):
     Schema Mappers maps the schema between target db and spark
     """
 
-    big_query = {"STRING": "string",
+    _big_query = {"STRING": "string",
                         "BYTES": "binary",
                         "INTEGER": "integer",
                         "FLOAT": "double",
@@ -117,3 +119,10 @@ class SchemaMappers(object):
                         "DATE": "date",
                         "DATETIME": "timestamp",
                         "RECORD":"string"}
+
+    @classmethod
+    def get_mapper(cls, mapper):
+        if mapper == 'bq':
+            return cls._big_query
+        else:
+            return ValueError('not support.')
