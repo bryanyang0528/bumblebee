@@ -95,7 +95,10 @@ class SchemaTypeValidator(object):
             raise TypeError("Type of col '{}' is invalid".format(','.join(invalid_col)))
 
 
-class SchemaTypes(object):
+class SchemaMappers(object):
+    """
+    Schema Mappers maps the schema between target db and spark
+    """
 
     big_query = {"STRING": "string",
                         "BYTES": "binary",

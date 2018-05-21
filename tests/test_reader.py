@@ -4,7 +4,7 @@ from mock import patch
 
 from pyspark.sql import DataFrame, SparkSession
 from bumblebee import Table, HiveReader
-from bumblebee import SchemaTypes as ST
+from bumblebee import SchemaMappers as ST
 
 schema_path = 'tests/schema/'
 data_path = 'tests/data/'

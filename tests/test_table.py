@@ -1,7 +1,7 @@
 import unittest
 
 from bumblebee import Table
-from bumblebee import SchemaTypes as ST
+from bumblebee import SchemaMappers as SM
 
 schema_path = 'tests/schema/'
 
@@ -13,7 +13,7 @@ class TestSchemaParser(unittest.TestCase):
         self.simple_schema_invalid_path = schema_path + 'simple_invalid.json'
 
     def test_read_raw_schema(self):
-        raw_schema = Table(self.simple_schema_path, ST.big_query).raw_schema
+        raw_schema = Table(self.simple_schema_path, SM.big_query).raw_schema
         self.assertEqual(raw_schema, {"col_string":"STRING",
                                       "col_integer":"INTEGER",
                                       "col_float":"FLOAT",
@@ -23,10 +23,10 @@ class TestSchemaParser(unittest.TestCase):
 
     def test_schema_validate_not_pass(self):
         with self.assertRaises(TypeError):
-            schema = Table(self.simple_schema_invalid_path, ST.big_query)
+            schema = Table(self.simple_schema_invalid_path, SM.big_query)
 
     def test_read_schema(self):
-        schema = Table(self.simple_schema_path, ST.big_query).schema
+        schema = Table(self.simple_schema_path, SM.big_query).schema
         self.assertEqual(schema, {"col_string": "string",
                                   "col_integer": "integer",
                                   "col_float": "double",
@@ -36,14 +36,14 @@ class TestSchemaParser(unittest.TestCase):
 
     def test_table_name(self):
         path = schema_path + 'default.test.json'
-        table = Table(path, ST.big_query)
+        table = Table(path, SM.big_query)
         table_name = table.name
         db_name = table.db_name
         self.assertEqual(table_name, "test")
         self.assertEqual(db_name, "default")
 
     def test_table_name_default(self):
-        table = Table(self.simple_schema_path, ST.big_query)
+        table = Table(self.simple_schema_path, SM.big_query)
         table_name = table.name
         db_name = table.db_name
         self.assertEqual(table_name, "simple")
@@ -52,5 +52,4 @@ class TestSchemaParser(unittest.TestCase):
     def test_table_name_error(self):
         path = schema_path + 'default.foo.test.json'
         with self.assertRaises(ValueError):
-            schema = Table(path, ST.big_query)
-
+            schema = Table(path, SM.big_query)
