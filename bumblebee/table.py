@@ -3,11 +3,19 @@ import json
 
 
 class Table(object):
-    def __init__(self, schema_path, schema_type: dict):
+    def __init__(self, schema_path, schema_mapper: dict):
+        """
+        
+        :param schema_path: 
+        :param schema_mapper:  a dict. key: valid data type of target db(like BQ);
+                                       value: valid data type of SparkSQL
+
+        """
         with open(schema_path) as f:
             schema = json.load(f)
-        self.schema_type = schema_type
+        self.schema_mapper = schema_mapper
         self.raw_schema = schema
+        self.schema = self.map_schema(self.raw_schema, self.schema_mapper)
         db_name, table_name = self.name_parser(schema_path)
         self.name = table_name
         self.db_name = db_name
@@ -18,9 +26,8 @@ class Table(object):
 
     @raw_schema.setter
     def raw_schema(self, raw_schema):
-        validator = SchemaTypeValidator(self.schema_type.keys())
+        validator = SchemaTypeValidator(self.schema_mapper.keys())
         validator.validate_schema(raw_schema)
-        self.schema = self.map_schema(raw_schema, self.schema_type)
         self._raw_schema = raw_schema
 
     @property
@@ -31,7 +38,8 @@ class Table(object):
     def schema(self, new_schema):
         self._schema = new_schema
 
-    def map_schema(self, raw_schema: dict, schema_type: dict):
+    @staticmethod
+    def map_schema(raw_schema: dict, schema_type: dict):
         new_schema = {}
         for key, value in raw_schema.items():
             new_schema[key] = schema_type[value]
@@ -81,7 +89,8 @@ class SchemaTypeValidator(object):
     def validate_schema(self, schema: dict):
         """
 
-        :param schema: {"col1":"STRING", "col2":"INTEGER"}
+        :param schema: schema from the source json file
+                       {"col1":"STRING", "col2":"INTEGER"}
         :return: True or raise a TypeError
         """
         invalid_col = []
