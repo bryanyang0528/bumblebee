@@ -15,6 +15,12 @@ spark = SparkSession.builder.getOrCreate()
 
 class TestCore(unittest.TestCase):
 
+    def test_driver_df_not_ready_error(self):
+        simple_schema_path = 'tests/schema/' + 'simple.json'
+        driver = Driver('hive', simple_schema_path, SM.big_query)
+        with self.assertRaises(ValueError):
+            driver.df
+
     @patch('bumblebee.reader.SparkSession.sql')
     def test_driver_read_hive_is_dataframe_wo_conditions(self, mock_spark_sql):
         d = [{'foo':'bar'}]
@@ -44,5 +50,3 @@ class TestCore(unittest.TestCase):
         path = schema_path + 'default.test.json'
         driver = Driver('hive', path, SM.big_query)
         self.assertEqual(driver.table_name, 'test')
-
-
