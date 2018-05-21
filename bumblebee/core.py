@@ -14,6 +14,7 @@ class Driver(object):
     table_name = attr.ib(init=False)
     db_name = attr.ib(init=False)
     _df = attr.ib(init=False, default=None)
+    _valid_df = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self):
         self._table = Table(self.schema_path, self.schema_mapper)
@@ -25,14 +26,21 @@ class Driver(object):
     @property
     def df(self):
         if not self._df:
-            raise ValueError("df is not ready, please 'read' it first")
+            raise ValueError("df is not ready, please 'read' it first.")
         else:
             return self._df
+
+    @property
+    def valid_df(self):
+        if not self._valid_df:
+            raise ValueError("valid df is not ready, please 'validate' it first.")
+        else:
+            return self._valid_df
 
     def read(self, condition=None):
         self._df = self.reader.select(condition=condition)
         return self
 
     def validate(self):
-        self._df = Validator.validate_data(self.df, self.schema)
+        self._valid_df = Validator.validate_data(self.df, self.schema)
         return self
