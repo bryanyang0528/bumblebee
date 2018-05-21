@@ -32,3 +32,7 @@ class Driver(object):
     def read(self, condition=None):
         self._df = self.reader.select(condition=condition)
         return self
+
+    def validate(self):
+        self._df = Validator.validate_data(self.df, self.schema)
+        return self
