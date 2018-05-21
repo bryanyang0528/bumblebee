@@ -1,7 +1,6 @@
 import attr
 
 from bumblebee import Table, HiveReader, Validator
-from bumblebee import SchemaMappers as SM
 
 
 @attr.s
@@ -14,7 +13,7 @@ class Driver(object):
     reader = attr.ib(init=False)
     table_name = attr.ib(init=False)
     db_name = attr.ib(init=False)
-    df = attr.ib(init=False)
+    _df = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self):
         self._table = Table(self.schema_path, self.schema_mapper)
@@ -23,5 +22,13 @@ class Driver(object):
         self.db_name = self.reader.db_name
         self.table_name = self.reader.table_name
 
+    @property
+    def df(self):
+        if not self._df:
+            raise ValueError("df is not ready, please 'read' it first")
+        else:
+            return self._df
+
     def read(self, condition=None):
-        self.df = self.reader.select(condition=condition)
+        self._df = self.reader.select(condition=condition)
+        return self
