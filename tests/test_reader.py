@@ -83,7 +83,7 @@ class TestHiveReader(unittest.TestCase):
 
     def test_reader_w_table(self):
         path = schema_path + 'default.test.json'
-        table = Table(path, ST.big_query)
+        table = Table(path, 'bq')
         reader = HiveReader(table)
         self.assertEqual(reader.table_name, table.name)
         self.assertEqual(reader.db_name, table.db_name)

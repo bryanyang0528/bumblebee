@@ -16,9 +16,11 @@ spark = SparkSession.builder.getOrCreate()
 
 class TestCoreBasic(unittest.TestCase):
 
+    schema_mapper='bq'
+
     def test_driver_df_not_ready_error(self):
         simple_schema_path = 'tests/schema/' + 'simple.json'
-        driver = Driver('hive', simple_schema_path, SM.big_query)
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
         with self.assertRaises(ValueError):
             driver.df
 
@@ -28,7 +30,7 @@ class TestCoreBasic(unittest.TestCase):
         mock_spark_sql.return_value = spark.createDataFrame(d)
 
         simple_schema_path = 'tests/schema/' + 'simple.json'
-        driver = Driver('hive', simple_schema_path, SM.big_query)
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
         driver.read()
         self.assertTrue(isinstance(driver.df, DataFrame))
 
@@ -43,7 +45,7 @@ class TestCoreBasic(unittest.TestCase):
         mock_spark_sql.return_value = spark.createDataFrame(data)
 
         simple_schema_path = 'tests/schema/' + 'simple.json'
-        driver = Driver('hive', simple_schema_path, SM.big_query)
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
         condition = "col_date = '1995-01-01'"
         driver.read(condition=condition)
 
@@ -53,7 +55,7 @@ class TestCoreBasic(unittest.TestCase):
 
     def test_driver_read_table_schema(self):
         simple_schema_path = 'tests/schema/' + 'simple.json'
-        driver = Driver('hive', simple_schema_path, SM.big_query)
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
         self.assertEqual(driver.schema, {"col_string": "string",
                                          "col_integer": "integer",
                                          "col_float": "double",
@@ -63,16 +65,18 @@ class TestCoreBasic(unittest.TestCase):
 
     def test_driver_db_name(self):
         path = schema_path + 'default.test.json'
-        driver = Driver('hive', path, SM.big_query)
+        driver = Driver('hive', path, self.schema_mapper)
         self.assertEqual(driver.db_name, 'default')
 
     def test_driver_table_name(self):
         path = schema_path + 'default.test.json'
-        driver = Driver('hive', path, SM.big_query)
+        driver = Driver('hive', path, self.schema_mapper)
         self.assertEqual(driver.table_name, 'test')
 
 
 class TestCoreValidator(unittest.TestCase):
+
+    schema_mapper = 'bq'
 
     @patch('bumblebee.reader.SparkSession.sql')
     def test_simple_data_validate_pass_all(self, mock_spark_sql):
@@ -85,7 +89,7 @@ class TestCoreValidator(unittest.TestCase):
         mock_spark_sql.return_value = spark.createDataFrame(data)
 
         path = schema_path + 'default.test.json'
-        driver = Driver('hive', path, SM.big_query)
+        driver = Driver('hive', path, self.schema_mapper)
         valid_df = driver.read().validate().valid_df
         validate_data = valid_df.collect()
 
@@ -105,7 +109,7 @@ class TestCoreValidator(unittest.TestCase):
         mock_spark_sql.return_value = spark.createDataFrame(data)
 
         path = schema_path + 'default.test.json'
-        driver = Driver('hive', path, SM.big_query)
+        driver = Driver('hive', path, self.schema_mapper)
         valid_df = driver.read().validate().valid_df
         validate_data = valid_df.collect()
 
@@ -125,7 +129,7 @@ class TestCoreValidator(unittest.TestCase):
         mock_spark_sql.return_value = spark.createDataFrame(data)
 
         simple_schema_path = 'tests/schema/' + 'simple.json'
-        driver = Driver('hive', simple_schema_path, SM.big_query)
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
         condition = "col_date = '1995-01-01'"
         valid_df = driver.read(condition=condition).validate().valid_df
 
