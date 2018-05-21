@@ -4,10 +4,13 @@ from __future__ import division
 from __future__ import print_function
 
 import sys
+import logging
+
 import argparse
 
 from bumblebee import Driver
 
+logger = logging.getLogger(__name__)
 
 def main(argv):
     CLIDriver(argv)
@@ -71,4 +74,8 @@ class CLIDriver(object):
 
     @staticmethod
     def run(**kwargs):
+        logger.info(kwargs)
+        driver = Driver(kwargs['src_type'], kwargs['schema_path'], kwargs['schema_mapper'])
+        valid_df = driver.read(condition=kwargs['condition']).validate().valid_df
+        logger.info('Valid_df: {}'.format(valid_df.show()))
         return True
