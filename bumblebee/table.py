@@ -1,10 +1,8 @@
 from __future__ import print_function, division
 import json
 
-import attr
-
 class Table(object):
-    def __init__(self, schema_path, schema_mapper: str):
+    def __init__(self, schema_path, schema_mapper: str, schema_parser: str='simple'):
         """
         
         :param schema_path: 
@@ -12,11 +10,9 @@ class Table(object):
                                        value: valid data type of SparkSQL
 
         """
-        with open(schema_path) as f:
-            schema = json.load(f)
 
         self.schema_mapper = SchemaMappers.get_mapper(schema_mapper)
-        self.raw_schema = schema
+        self.raw_schema = self.schema_parser(schema_path, schema_parser, self.schema_mapper)
         self.schema = self.map_schema(self.raw_schema, self.schema_mapper)
         db_name, table_name = self.name_parser(schema_path)
         self.name = table_name
@@ -28,8 +24,6 @@ class Table(object):
 
     @raw_schema.setter
     def raw_schema(self, raw_schema):
-        validator = SchemaTypeValidator(self.schema_mapper.keys())
-        validator.validate_schema(raw_schema)
         self._raw_schema = raw_schema
 
     @property
@@ -74,6 +68,23 @@ class Table(object):
             return "default", parts[0]
         else:
             raise ValueError("Filename should be [db_name].[table_name].json")
+
+    @staticmethod
+    def schema_parser(schema_path, schema_parser, schema_mapper):
+        with open(schema_path) as f:
+            data = json.load(f)
+
+        if schema_parser == 'simple':
+            schema = data
+        elif schema_parser == 'bq':
+            schema = {}
+            for d in data:
+                schema[d['name']] = d['type']
+
+        validator = SchemaTypeValidator(schema_mapper.keys())
+        validator.validate_schema(schema)
+        return schema
+
 
 class SchemaTypeValidator(object):
     def __init__(self, valid_schema: list):
