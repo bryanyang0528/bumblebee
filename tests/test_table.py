@@ -54,3 +54,23 @@ class TestSchemaParser(unittest.TestCase):
         path = schema_path + 'default.foo.test.json'
         with self.assertRaises(ValueError):
             schema = Table(path, self.schema_mapper)
+
+
+class TestBQSchemaParser(unittest.TestCase):
+
+    def setUp(self):
+        self.bq_schema_path = schema_path + 'bq_dataset.bq_schema.json'
+        self.bq_invalid_schema_path = schema_path + 'bq_dataset.bq_invalid_schema.json'
+        self.schema_mapper = 'bq'
+
+    def test_read_raw_schema(self):
+        raw_schema = Table(self.bq_schema_path, self.schema_mapper, schema_parser='bq').raw_schema
+        self.assertEqual(raw_schema, {"create_at": "STRING",
+                                      "action_type": "STRING",
+                                      "ad_id": "STRING",
+                                      "cell_id": "STRING",
+                                      "cost_points": "FLOAT"})
+
+    def test_schema_validate_not_pass(self):
+        with self.assertRaises(TypeError):
+            raw_schema = Table(self.bq_invalid_schema_path, self.schema_mapper, schema_parser='bq').raw_schema
