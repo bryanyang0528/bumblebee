@@ -68,6 +68,12 @@ class CLIDriver(object):
                               default='json',
                               choices=['json', 'csv'])
 
+        optional.add_argument('--condition',
+                              required=False,
+                              type=str,
+                              metavar='dt > "2018-01-01"',
+                              default=None)
+
         parser._action_groups.append(optional)
 
         parser.set_defaults(
