@@ -44,3 +44,8 @@ class Driver(object):
     def validate(self):
         self._valid_df = Validator.validate_data(self.df, self.schema)
         return self
+
+    def write(self, file_format, path_prefix):
+        full_path = '{}/{}/{}'.format(path_prefix, self.db_name, self.table_name)
+        self._valid_df.write.format(file_format).save(full_path)
+        return True

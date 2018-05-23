@@ -38,7 +38,7 @@ class CLIDriver(object):
         required.add_argument('--target_path',
                               required=True,
                               type=str,
-                              metavar='s3://bucket/folder/file_name')
+                              metavar='s3://bucket/folder/')
 
         optional.add_argument('--src_type',
                               required=False,
@@ -53,6 +53,13 @@ class CLIDriver(object):
                               metavar='bq',
                               default='bq',
                               choices=['bq'])
+
+        optional.add_argument('--schema_parser',
+                              required=False,
+                              type=str,
+                              metavar='bq',
+                              default='bq',
+                              choices=['simple', 'bq'])
 
         optional.add_argument('--target_type',
                               required=False,
@@ -75,7 +82,16 @@ class CLIDriver(object):
     @staticmethod
     def run(**kwargs):
         logger.info(kwargs)
-        driver = Driver(kwargs['src_type'], kwargs['schema_path'], kwargs['schema_mapper'])
-        valid_df = driver.read(condition=kwargs['condition']).validate().valid_df
+        src_type = kwargs.pop('src_type')
+        schema_path = kwargs.pop('schema_path')
+        schema_mapper = kwargs.pop('schema_mapper')
+        target_type = kwargs.pop('target_type')
+        target_path = kwargs.pop('target_path')
+        condition = kwargs.pop('condition')
+
+        driver = Driver(src_type, schema_path, schema_mapper)
+        valid_df = driver.read(condition=condition).validate().valid_df
         logger.info('Valid_df: {}'.format(valid_df.show()))
+        valid_df.write.format(target_type).save(target_path)
+        logger.info('Success! Please find files in : {}'.format(target_path))
         return True
