@@ -8,7 +8,6 @@ stages:
 variables:
     GIT_DEPTH: "50"
     DOCKER_IMAGE: $CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
-    ECS_IMAGE: ${ECR_PATH}/$DOCKER_IMAGE
 
 build:
     stage: build
@@ -29,7 +28,7 @@ deploy:
     image: bryanyang0528/aws_docker:latest
     script:
         - $(aws ecr get-login --no-include-email --region ap-northeast-1)
-        - docker tag $DOCKER_IMAGE $ECS_IMAGE
+        - docker tag $DOCKER_IMAGE ${ECR_PATH}/$DOCKER_IMAGE
         - docker push $ECS_IMAGE
     when: manual
     only:
