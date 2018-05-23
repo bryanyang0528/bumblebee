@@ -26,6 +26,7 @@ test:
 
 deploy:
     stage: deploy
+    image: bryanyang0528/aws_docker:latestg
     script:
         - $(aws ecr get-login --no-include-email --region ap-northeast-1)
         - docker tag $DOCKER_IMAGE $ECS_IMAGE
