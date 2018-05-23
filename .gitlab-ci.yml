@@ -1,7 +1,9 @@
+image: docker:latest
+
 stages:
-  - build
-  - test
-  - deploy
+    - build
+    - test
+    - deploy
 
 variables:
     GIT_DEPTH: "50"
