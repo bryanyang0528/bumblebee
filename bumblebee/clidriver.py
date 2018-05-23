@@ -91,11 +91,12 @@ class CLIDriver(object):
         src_type = kwargs.pop('src_type')
         schema_path = kwargs.pop('schema_path')
         schema_mapper = kwargs.pop('schema_mapper')
+        schema_parser = kwargs.pop('schema_parser')
         target_type = kwargs.pop('target_type')
         target_path = kwargs.pop('target_path')
         condition = kwargs.pop('condition')
 
-        driver = Driver(src_type, schema_path, schema_mapper)
+        driver = Driver(src_type, schema_path, schema_mapper, schema_parser)
         valid_df = driver.read(condition=condition).validate().valid_df
         logger.info('Valid_df: {}'.format(valid_df.show()))
         valid_df.write.format(target_type).save(target_path)

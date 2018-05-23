@@ -8,6 +8,7 @@ class Driver(object):
     src = attr.ib(default='hive')
     schema_path = attr.ib(default=attr.Factory(str))
     schema_mapper = attr.ib(default=attr.Factory(dict))
+    schema_parser = attr.ib(default=attr.Factory(str))
     _table = attr.ib(init=False)
     schema = attr.ib(init=False)
     reader = attr.ib(init=False)
@@ -17,7 +18,7 @@ class Driver(object):
     _valid_df = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self):
-        self._table = Table(self.schema_path, self.schema_mapper)
+        self._table = Table(self.schema_path, self.schema_mapper, self.schema_parser)
         self.schema = self._table.schema
         self.reader = HiveReader(self._table)
         self.db_name = self.reader.db_name
