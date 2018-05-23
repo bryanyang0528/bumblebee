@@ -2,7 +2,7 @@
 set -x
 
 pip install --upgrade pip setuptools
-pip install coverage mock nose pyspark=2.2.1
+pip install coverage mock nose pyspark==2.2.1
 
 nosetests \
     --logging-level=INFO \
