@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 class HiveReader(object):
 
     def __init__(self, table=None):
-        self.spark = SparkSession.builder.getOrCreate()
+        self.spark = SparkSession.builder.enableHiveSupport().getOrCreate()
         if table:
             self.db_name = table.db_name
             self.table_name = table.name
@@ -49,9 +49,9 @@ class HiveReader(object):
             table = table
 
         if not condition:
-            df = self.spark.sql("select * from {}.{}".format(db, table))
+            df = self.spark.sql("select * from `{}`.`{}`".format(db, table))
         elif condition and isinstance(condition, str):
-            df = self.spark.sql("select * from {}.{} where {}".format(db, table, condition))
+            df = self.spark.sql("select * from `{}`.`{}` where {}".format(db, table, condition))
         else:
             raise ValueError("Partition key is not available")
 
