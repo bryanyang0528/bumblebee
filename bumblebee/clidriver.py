@@ -12,6 +12,7 @@ from bumblebee import Driver
 
 logger = logging.getLogger(__name__)
 
+
 def main(argv):
     CLIDriver(argv)
 
@@ -31,9 +32,9 @@ class CLIDriver(object):
         required = parser.add_argument_group('required arguments')
 
         required.add_argument('--schema_path',
-                            required=True,
-                            type=str,
-                            metavar='~/path/db.name.json')
+                              required=True,
+                              type=str,
+                              metavar='~/path/db.name.json')
 
         required.add_argument('--target_path',
                               required=True,
@@ -93,12 +94,13 @@ class CLIDriver(object):
         schema_mapper = kwargs.pop('schema_mapper')
         schema_parser = kwargs.pop('schema_parser')
         target_type = kwargs.pop('target_type')
-        target_path = kwargs.pop('target_path')
         condition = kwargs.pop('condition')
 
         driver = Driver(src_type, schema_path, schema_mapper, schema_parser)
         valid_df = driver.read(condition=condition).validate().valid_df
-        logger.info('Valid_df: {}'.format(valid_df.show()))
-        valid_df.write.format(target_type).save(target_path)
+
+        target_path = '{}/{}'.format(kwargs.pop('target_path'), driver.table_name)
+        valid_df.write.format(target_type).mode('overwrite').save(target_path)
+        valid_df.show()
         logger.info('Success! Please find files in : {}'.format(target_path))
         return True
