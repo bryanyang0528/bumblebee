@@ -26,7 +26,7 @@ class TestHiveReader(unittest.TestCase):
         db = 'default'
         table = 'test'
         df = reader.select(db, table)
-        mock_spark_sql.assert_called_with("select * from default.test")
+        mock_spark_sql.assert_called_with("select * from `default`.`test`")
         mock_spark_sql.assert_called_once()
         self.assertTrue(isinstance(df, DataFrame))
 
@@ -38,7 +38,7 @@ class TestHiveReader(unittest.TestCase):
         reader = HiveReader()
         table = 'test'
         df = reader.select(table=table)
-        mock_spark_sql.assert_called_with("select * from default.test")
+        mock_spark_sql.assert_called_with("select * from `default`.`test`")
         mock_spark_sql.assert_called_once()
         self.assertTrue(isinstance(df, DataFrame))
 
@@ -64,7 +64,7 @@ class TestHiveReader(unittest.TestCase):
         table = 'test'
         condition = "dt > '2018-01-01'"
         df = reader.select(db, table, condition=condition)
-        mock_spark_sql.assert_called_with("select * from default.test where dt > '2018-01-01'")
+        mock_spark_sql.assert_called_with("select * from `default`.`test` where dt > '2018-01-01'")
         mock_spark_sql.assert_called_once()
         self.assertTrue(isinstance(df, DataFrame))
 
@@ -87,6 +87,13 @@ class TestHiveReader(unittest.TestCase):
         reader = HiveReader(table)
         self.assertEqual(reader.table_name, table.name)
         self.assertEqual(reader.db_name, table.db_name)
+
+    def test_reader_w_table_mapper_error(self):
+        path = schema_path + 'default.test.json'
+        with self.assertRaises(ValueError):
+            table = Table(path, '')
+
+
 
 
 
