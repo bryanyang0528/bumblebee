@@ -6,7 +6,6 @@ from mock import patch
 from pyspark.sql import DataFrame, SparkSession, Row
 
 from bumblebee.core import Driver
-from bumblebee import SchemaMappers as SM
 
 schema_path = 'tests/schema/'
 data_path = 'tests/data/'

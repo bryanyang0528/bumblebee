@@ -1,7 +1,6 @@
 import unittest
 
 from bumblebee import Table
-from bumblebee import SchemaMappers as SM
 
 schema_path = 'tests/schema/'
 
