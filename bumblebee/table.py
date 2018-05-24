@@ -12,7 +12,7 @@ class Table(object):
         """
 
         self.schema_mapper = SchemaMappers.get_mapper(schema_mapper)
-        self.raw_schema = self.schema_parser(schema_path, schema_parser, self.schema_mapper)
+        self.raw_schema = self.schema_parser(schema_path, self.schema_mapper, schema_parser)
         self.schema = self.map_schema(self.raw_schema, self.schema_mapper)
         db_name, table_name = self.name_parser(schema_path)
         self.name = table_name
@@ -70,7 +70,7 @@ class Table(object):
             raise ValueError("Filename should be [db_name].[table_name].json")
 
     @staticmethod
-    def schema_parser(schema_path, schema_parser, schema_mapper):
+    def schema_parser(schema_path, schema_mapper, schema_parser):
         with open(schema_path) as f:
             data = json.load(f)
 
@@ -80,6 +80,8 @@ class Table(object):
             schema = {}
             for d in data:
                 schema[d['name']] = d['type']
+        else:
+            raise ValueError('Did not support this schema_parser {}.'.format(schema_parser))
 
         validator = SchemaTypeValidator(schema_mapper.keys())
         validator.validate_schema(schema)
@@ -136,4 +138,4 @@ class SchemaMappers(object):
         if mapper == 'bq':
             return cls._big_query
         else:
-            return ValueError('not support.')
+            raise ValueError('Did not support this mapper: {}.'.format(mapper))
