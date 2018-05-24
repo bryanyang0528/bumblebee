@@ -1,0 +1,6 @@
+{ "1col_1string": "STRING",
+  "2col_2integer": "INTEGER",
+  "3col_3float": "FLOAT",
+  "4col_4date": "DATE",
+  "5col_5datetime": "TIMESTAMP",
+  "6col_6boolean": "BOOLEAN"}
