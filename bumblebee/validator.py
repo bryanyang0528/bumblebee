@@ -12,12 +12,11 @@ class Validator(object):
         return dataframe.select(*(col(c).cast(schema[c]) for c in dataframe.columns))
 
     @classmethod
-    def validate_schema(cls, dataframe, schema_rule: str):
-
-        if schema_rule == 'bq':
+    def validate_schema(cls, dataframe, rule: str='bq'):
+        if rule == 'bq':
             new_column_name_list = ['_' + x if re.match(r'[^\D]', x) else x for x in dataframe.columns]
         else:
-            raise ValueError('Did not support this rule: {}'.format(schema_rule))
+            raise ValueError('Did not support this rule: {}'.format(rule))
 
         dataframe = dataframe.toDF(*new_column_name_list)
         return dataframe

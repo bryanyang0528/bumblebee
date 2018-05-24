@@ -97,7 +97,6 @@ class TestValidatorSchema(unittest.TestCase):
                  "5col_datetime": "1995-01-01 00:01:01",
                  "6col_boolean": True}]
         df = spark.createDataFrame(data)
-        df.printSchema()
         validate_data = Validator.validate_data(df, self.simple_schema)
         validate_data_schema = Validator.validate_schema(validate_data, 'bq').collect()
         self.assertEqual(validate_data_schema,
@@ -121,7 +120,6 @@ class TestValidatorSchema(unittest.TestCase):
                  "6col_6boolean": True}]
 
         df = spark.createDataFrame(data)
-        df.printSchema()
         validate_data = Validator.validate_data(df, simple_schema)
         validate_data_schema = Validator.validate_schema(validate_data, 'bq').collect()
         self.assertEqual(validate_data_schema,
@@ -132,16 +130,15 @@ class TestValidatorSchema(unittest.TestCase):
                               _2col_2integer=None,
                               _1col_1string='string')])
 
-        def test_simple_data_validate_column_name_not_support_error(self):
-            data = [{"1col_string": "string",
+    def test_simple_data_validate_column_name_not_support_error(self):
+        data = [{"1col_string": "string",
                      "2col_integer": "99-01-01",
                      "3col_float": 5566.5566,
                      "4col_date": "NULL",
                      "5col_datetime": "1995-01-01 00:01:01",
                      "6col_boolean": True}]
-            df = spark.createDataFrame(data)
-            df.printSchema()
-            validate_data = Validator.validate_data(df, self.simple_schema)
+        df = spark.createDataFrame(data)
+        validate_data = Validator.validate_data(df, self.simple_schema)
 
-            with self.assertRaise(ValueError):
-                validate_data_schema = Validator.validate_schema(validate_data, 'test').collect()
+        with self.assertRaises(ValueError):
+            validate_data_schema = Validator.validate_schema(validate_data, rule='test').collect()
