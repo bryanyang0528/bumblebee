@@ -46,8 +46,12 @@ class Driver(object):
         self._df = self.reader.select(condition=condition)
         return self
 
-    def validate(self):
+    def validate(self, validate_schema=True, rule='bq'):
         self._valid_df = Validator.validate_data(self.df, self.schema)
+
+        if validate_schema is True:
+            self._valid_df = Validator.validate_schema(self._valid_df, rule=rule)
+
         return self
 
     def write(self, file_format, path_prefix):
