@@ -50,7 +50,7 @@ class TestCoreBasic(unittest.TestCase):
         driver.read(condition=condition)
 
         self.assertTrue(isinstance(driver.df, DataFrame))
-        mock_spark_sql.assert_called_with("select * from default.simple where col_date = '1995-01-01'")
+        mock_spark_sql.assert_called_with("select * from `default`.`simple` where col_date = '1995-01-01'")
         mock_spark_sql.assert_called_once()
 
     def test_driver_read_table_schema(self):
@@ -134,7 +134,7 @@ class TestCoreValidator(unittest.TestCase):
         valid_df = driver.read(condition=condition).validate().valid_df
 
         self.assertTrue(isinstance(driver.df, DataFrame))
-        mock_spark_sql.assert_called_with("select * from default.simple where col_date = '1995-01-01'")
+        mock_spark_sql.assert_called_with("select * from `default`.`simple` where col_date = '1995-01-01'")
         mock_spark_sql.assert_called_once()
         self.assertEqual(valid_df.collect(),
                          [Row(col_boolean=True, col_date=datetime.date(1995, 1, 1),
