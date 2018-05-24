@@ -1,6 +1,10 @@
+import logging
+
 import attr
 
 from bumblebee import Table, HiveReader, Validator
+
+logger = logging.getLogger(__name__)
 
 
 @attr.s
@@ -8,7 +12,7 @@ class Driver(object):
     src = attr.ib(default='hive')
     schema_path = attr.ib(default=attr.Factory(str))
     schema_mapper = attr.ib(default=attr.Factory(dict))
-    schema_parser = attr.ib(default=attr.Factory(str))
+    schema_parser = attr.ib(default='simple')
     _table = attr.ib(init=False)
     schema = attr.ib(init=False)
     reader = attr.ib(init=False)
