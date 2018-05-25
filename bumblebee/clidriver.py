@@ -105,9 +105,14 @@ class CLIDriver(object):
         driver = Driver(src_type, schema_path, schema_mapper, schema_parser)
         valid_df = driver.read(condition=condition).validate().valid_df
 
-        target_path = '{}/{}'.format(kwargs.pop('target_path'), driver.table_name)
-        valid_df.write.format(target_type).mode('overwrite').save(target_path)
-        valid_df.show()
-        logger.info('Success! Please find files in : {}'.format(target_path))
+        if driver.check_sum() is True:
+            target_path = '{}/{}'.format(kwargs.pop('target_path'), driver.table_name)
+            valid_df.write.format(target_type).mode('overwrite').save(target_path)
+            valid_df.show()
+            logger.info('Success! Please find files in : {}'.format(target_path))
 
-        return True
+            return True
+
+        else:
+            logger.error('Failed!')
+            return False
