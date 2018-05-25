@@ -1,4 +1,4 @@
-[{"description": "create_at", "mode": "NULLABLE", "name": "create_at", "type": "STRING"},
+[ {"description": "create_at", "mode": "NULLABLE", "name": "create_at", "type": "STRING"},
   {"description": "action_type", "mode": "NULLABLE", "name": "action_type", "type": "STRING"},
   {"description": "ad_id", "mode": "NULLABLE", "name": "ad_id", "type": "STRING"},
   {"description": "cell_id", "mode": "NULLABLE", "name": "cell_id", "type": "STRING"},
