@@ -54,6 +54,19 @@ class Driver(object):
 
         return self
 
+    def check_sum(self):
+        if self.df and self.valid_df:
+            sum_df = self.df.count()
+            sum_valid_df = self.valid_df.count()
+            result = sum_df == sum_valid_df
+
+            if result is True:
+                logger.info("Check Sum Passed! Result: {}".format(sum_valid_df))
+                return True
+            else:
+                logger.error("Check Sum Failed! df: {}, valid_df: {}".format(sum_df, sum_valid_df))
+                raise ValueError("Check Sum Failed!")
+
     def write(self, file_format, path_prefix):
         full_path = '{}/{}/{}'.format(path_prefix, self.db_name, self.table_name)
         self._valid_df.write.format(file_format).save(full_path)

@@ -188,3 +188,56 @@ class TestCoreValidator(unittest.TestCase):
                           '4col_4date',
                           '5col_5datetime',
                           '6col_6boolean'])
+
+    @patch('bumblebee.reader.SparkSession.sql')
+    def test_check_sum_validate_do_not_replace_field_start_with_number(self, mock_spark_sql):
+        data = [{"1col_1string": "string",
+                 "2col_2integer": "99-01-01",
+                 "3col_3float": 5566.5566,
+                 "4col_4date": "NULL",
+                 "5col_5datetime": "1995-01-01 00:01:01",
+                 "6col_6boolean": True}]
+        mock_spark_sql.return_value = spark.createDataFrame(data)
+
+        simple_schema_path = 'tests/schema/' + 'numeric_field.json'
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
+        valid_df = driver.read().validate(validate_schema=False).valid_df
+        self.assertTrue(driver.check_sum())
+        self.assertEqual(valid_df.columns,
+                         ['1col_1string',
+                          '2col_2integer',
+                          '3col_3float',
+                          '4col_4date',
+                          '5col_5datetime',
+                          '6col_6boolean'])
+
+    @patch('bumblebee.core.Driver.valid_df')
+    @patch('bumblebee.reader.SparkSession.sql')
+    def test_check_sum_failed(self, mock_spark_sql, mock_valid_df):
+        data = [{"1col_1string": "string",
+                 "2col_2integer": "99-01-01",
+                 "3col_3float": 5566.5566,
+                 "4col_4date": "NULL",
+                 "5col_5datetime": "1995-01-01 00:01:01",
+                 "6col_6boolean": True}]
+        mock_spark_sql.return_value = spark.createDataFrame(data)
+
+        valid_data = [{"1col_1string": "string",
+                       "2col_2integer": "99-01-01",
+                       "3col_3float": 5566.5566,
+                       "4col_4date": "NULL",
+                       "5col_5datetime": "1995-01-01 00:01:01",
+                       "6col_6boolean": True}]
+        mock_valid_df.return_value = spark.createDataFrame(valid_data)
+
+        simple_schema_path = 'tests/schema/' + 'numeric_field.json'
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
+        with self.assertRaisesRegexp(ValueError, "Check Sum Failed!"):
+            self.assertTrue(driver.read().check_sum())
+
+    def test_df_not_read_error(self):
+
+        simple_schema_path = 'tests/schema/' + 'numeric_field.json'
+        driver = Driver('hive', simple_schema_path, self.schema_mapper)
+        with self.assertRaisesRegexp(ValueError, "df is not ready, please 'read' it first."):
+            self.assertTrue(driver.check_sum())
