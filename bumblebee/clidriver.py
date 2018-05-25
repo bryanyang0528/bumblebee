@@ -75,6 +75,12 @@ class CLIDriver(object):
                               metavar='dt > "2018-01-01"',
                               default=None)
 
+        optional.add_argument('--check_sum',
+                              required=False,
+                              type=bool,
+                              metavar='True',
+                              default=True)
+
         parser._action_groups.append(optional)
 
         parser.set_defaults(
@@ -103,4 +109,5 @@ class CLIDriver(object):
         valid_df.write.format(target_type).mode('overwrite').save(target_path)
         valid_df.show()
         logger.info('Success! Please find files in : {}'.format(target_path))
+
         return True
