@@ -49,7 +49,7 @@ class HiveReader(object):
             table = table
 
         if repair is True:
-            self.spark.sql("* MSCK REPAIR TABLE `{}`.`{}`".format(db, table))
+            self.spark.sql("MSCK REPAIR TABLE `{}`.`{}`".format(db, table))
 
         if not condition:
             df = self.spark.sql("select * from `{}`.`{}`".format(db, table))
