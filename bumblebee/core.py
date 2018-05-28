@@ -42,8 +42,8 @@ class Driver(object):
         else:
             return self._valid_df
 
-    def read(self, condition=None):
-        self._df = self.reader.select(condition=condition)
+    def read(self, condition=None, repair=False):
+        self._df = self.reader.select(condition=condition, repair=repair)
         return self
 
     def validate(self, validate_schema=True, rule='bq'):
