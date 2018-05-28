@@ -29,7 +29,7 @@ class HiveReader(object):
     def table_name(self, table_name):
         self._table_name = table_name
 
-    def select(self, db=None, table=None, condition=None):
+    def select(self, db=None, table=None, condition=None, repair=False):
         """
 
         :rtype: pyspark.sql.DataFrame
@@ -47,6 +47,9 @@ class HiveReader(object):
             raise ValueError("Lack a table name to be selected")
         else:
             table = table
+
+        if repair is True:
+            self.spark.sql("* MSCK REPAIR TABLE `{}`.`{}`".format(db, table))
 
         if not condition:
             df = self.spark.sql("select * from `{}`.`{}`".format(db, table))
