@@ -107,7 +107,9 @@ class CLIDriver(object):
 
         if driver.check_sum() is True:
             target_path = '{}/{}'.format(kwargs.pop('target_path'), driver.table_name)
-            valid_df.write.format(target_type).mode('overwrite').save(target_path)
+            sum_df = driver.sum_df
+            partitions = 1 + round(sum_df/100000)
+            valid_df.repartition(partitions).write.format(target_type).mode('overwrite').save(target_path)
             valid_df.show()
             logger.info('Success! Please find files in : {}'.format(target_path))
 
