@@ -20,6 +20,7 @@ class Driver(object):
     db_name = attr.ib(init=False)
     _df = attr.ib(init=False, default=None)
     _valid_df = attr.ib(init=False, default=None)
+    _sum_df = attr.ib(init=False, default=None)
 
     def __attrs_post_init__(self):
         self._table = Table(self.schema_path, self.schema_mapper, self.schema_parser)
@@ -42,6 +43,13 @@ class Driver(object):
         else:
             return self._valid_df
 
+    @property
+    def sum_df(self):
+        if not self._sum_df:
+            raise ValueError("Please check sum first.")
+        else:
+            return self._sum_df
+
     def read(self, condition=None, repair=False):
         self._df = self.reader.select(condition=condition, repair=repair)
         return self
@@ -62,6 +70,7 @@ class Driver(object):
 
             if result is True:
                 logger.info("Check Sum Passed! Result: {}".format(sum_valid_df))
+                self._sum_df = sum_df
                 return True
             else:
                 logger.error("Check Sum Failed! df: {}, valid_df: {}".format(sum_df, sum_valid_df))
