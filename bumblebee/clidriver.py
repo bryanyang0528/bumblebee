@@ -103,12 +103,12 @@ class CLIDriver(object):
         condition = kwargs.pop('condition')
 
         driver = Driver(src_type, schema_path, schema_mapper, schema_parser)
-        valid_df = driver.read(condition=condition, repair=True).validate().valid_df
+        valid_df = driver.read(condition=condition).validate().valid_df
 
         if driver.check_sum() is True:
             target_path = '{}/{}'.format(kwargs.pop('target_path'), driver.table_name)
             sum_df = driver.sum_df
-            partitions = 1 + round(sum_df/100000)
+            partitions = 1 + round(sum_df/250000)
             valid_df.repartition(partitions).write.format(target_type).mode('overwrite').save(target_path)
             valid_df.show()
             logger.info('Success! Please find files in : {}'.format(target_path))
