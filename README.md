@@ -73,6 +73,8 @@ optional arguments:
 
 * Big Query
 
+**name** and **type** is required
+
 ```json
 [{"description": "create_at", "mode": "NULLABLE", "name": "create_at", "type": "STRING"},
   {"description": "action_type", "mode": "NULLABLE", "name": "action_type", "type": "STRING"},
