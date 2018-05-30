@@ -1,7 +1,7 @@
 
 pip:
 	@echo "install requirements"
-	pip install -r requirements.txt
+	pip install attrs target=.
 
 build: pip
 	@echo "Build package"
